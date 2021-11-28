@@ -4,32 +4,38 @@ exports.pubsub = void 0;
 const nanoid_1 = require("nanoid");
 const listenerProto = {
     id: "",
-    pubId: "",
     callback: () => { },
 };
 const PubSub = () => {
-    const __private__ = {
-        listeners: [],
-    };
+    const listeners = {};
+    const maps = [];
     return {
         publish(pubId, data) {
-            const children = __private__.listeners.filter((listener) => listener.pubId === pubId);
-            children.forEach(({ callback }) => {
-                callback(data);
-            });
+            var _a;
+            (_a = listeners[pubId]) === null || _a === void 0 ? void 0 : _a.forEach(({ callback }) => callback(data));
         },
         subscribe(pubId, callback) {
+            var _a;
             const listener = Object.create(listenerProto);
             const id = (0, nanoid_1.nanoid)();
             listener.id = id;
-            listener.pubId = pubId;
             listener.callback = callback;
-            __private__.listeners.push(listener);
+            if (listeners[pubId] === undefined) {
+                listeners[pubId] = [];
+            }
+            (_a = listeners[pubId]) === null || _a === void 0 ? void 0 : _a.push(listener);
+            maps.push({
+                id,
+                pubId,
+            });
             return id;
         },
         unsubscribe(id) {
-            const left = __private__.listeners.filter((listener) => listener.id !== id);
-            __private__.listeners = left;
+            var _a, _b;
+            const pubId = (_a = maps.find((v) => v.id === id)) === null || _a === void 0 ? void 0 : _a.pubId;
+            if (typeof pubId === "string") {
+                listeners[pubId] = ((_b = listeners[pubId]) === null || _b === void 0 ? void 0 : _b.filter((v) => v.id === id)) || [];
+            }
         },
     };
 };

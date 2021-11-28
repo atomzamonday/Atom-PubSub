@@ -1,6 +1,5 @@
 declare type Listener = {
     id: string;
-    pubId: string;
     callback: (data?: any) => any;
 };
 declare const pubsub: {
