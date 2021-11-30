@@ -1,3 +1,7 @@
 src
 tsconfig.json
 .yarn
+.yarnrc.yml
+.pnp.cjs
+.pnp.loader.mjs
+.vscode
